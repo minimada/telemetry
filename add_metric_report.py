@@ -39,5 +39,4 @@ for i in range(1, metricGrouptN):
             .replace("{{testReportIdx}}", str(k))
         )
         res = myhttp.post(url, body_data)
-        print("i:{}, k:{}, res: {}".format(i, k,res.status_code))
-    
+        print("i:{}, k:{}, res: {}".format(i, k, res.status_code))
