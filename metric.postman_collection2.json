@@ -1,0 +1,589 @@
+{
+	"info": {
+		"_postman_id": "124a6784-6fc5-4160-983d-eaf2fef2f5d3",
+		"name": "metric",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20616785",
+		"_collection_link": "https://grey-zodiac-336867.postman.co/workspace/Brian-Team-Workspace~40f740d9-cd20-481b-84fd-aa253cb948fe/collection/20616785-124a6784-6fc5-4160-983d-eaf2fef2f5d3?action=share&source=collection_link&creator=20616785"
+	},
+	"item": [
+		{
+			"name": "get token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\":\r\n    [\r\n        \"root\", \"0penBmc\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{base_url}}/login",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Telemetric",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//let id = Number(pm.collectionVariables.get(\"testGroup\"))+2;\r",
+							"//let temp = pm.collectionVariables.get(`metricGroup${id}`);\r",
+							"//console.log(temp);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// loop control test\r",
+							"let idx = pm.collectionVariables.get(\"idx\") || 0;\r",
+							"const maxLoop = Number(pm.collectionVariables.get(\"testLoop\")) - 1;\r",
+							"console.log(`current idx: ${idx}`);\r",
+							"if (pm.response.code === 200) {\r",
+							"    if (idx < maxLoop) {\r",
+							"        pm.collectionVariables.set(\"idx\", ++idx);\r",
+							"        postman.setNextRequest(\"get Telemetric\");\r",
+							"    } else {\r",
+							"        console.log(\"loop finished\");\r",
+							"    }\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{base_url}}/redfish/v1/TelemetryService/",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"redfish",
+						"v1",
+						"TelemetryService",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MetricReportDefinitions",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Id\": \"test\",\r\n\r\n    \"Metrics\": [\r\n        {\r\n            \"MetricProperties\": [\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/temperature_EVB_Temp\"\r\n            ]\r\n        }\r\n    ],\r\n    \"MetricReportDefinitionType\": \"OnRequest\",\r\n    \"ReportActions\": [\r\n        \"RedfishEvent\",\r\n        \"LogToMetricReportsCollection\"\r\n    ],\r\n    \"ReportUpdates\": \"Overwrite\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{base_url}}/redfish/v1/TelemetryService/MetricReportDefinitions",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"redfish",
+						"v1",
+						"TelemetryService",
+						"MetricReportDefinitions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TestGroup1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let index = pm.collectionVariables.get(\"testName\");\r",
+							"pm.collectionVariables.set(\"testName\", Number(index) + 1);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Id\": \"testGroup1_{{testName}}\",\r\n    \"Metrics\": [\r\n        {\r\n            \"MetricProperties\": [\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/temperature_EVB_Temp\",\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_1\",\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_2\",\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_3\",\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan1\",\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan2\",\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan3\",\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC1\",\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC2\",\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC3\"\r\n            ]\r\n        }\r\n    ],\r\n    \"MetricReportDefinitionType\": \"OnChange\",\r\n    \"ReportActions\": [\r\n        \"RedfishEvent\",\r\n        \"LogToMetricReportsCollection\"\r\n    ],\r\n    \"ReportUpdates\": \"Overwrite\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{base_url}}/redfish/v1/TelemetryService/MetricReportDefinitions",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"redfish",
+						"v1",
+						"TelemetryService",
+						"MetricReportDefinitions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TestGroupN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"// handle next post request\r",
+							"let testIdx = pm.collectionVariables.get(\"testReportIdx\") || 0;\r",
+							"let groupIdx = pm.collectionVariables.get(\"testGroupIdx\") || 0;\r",
+							"const maxReport = Number(pm.collectionVariables.get(\"metricReportN\"));\r",
+							"const maxGroup = Number(pm.collectionVariables.get(\"maxGroup\"));\r",
+							"console.log(`groupIdx: ${groupIdx}, testIdx: ${testIdx}`);\r",
+							"// test report index from 0 ~ N-1\r",
+							"if (++testIdx < maxReport) {\r",
+							"    pm.collectionVariables.set(\"testReportIdx\", testIdx);\r",
+							"    console.log(\"testIdx++ and next\");\r",
+							"    postman.setNextRequest(\"TestGroupN\");\r",
+							"}\r",
+							"// test group index from 1 ~ N \r",
+							"else if (++groupIdx <= maxGroup) {\r",
+							"    console.log(\"groupIdx++ and next\");\r",
+							"    pm.collectionVariables.set(\"testReportIdx\", 0);\r",
+							"    pm.collectionVariables.set(\"testGroupIdx\", groupIdx);\r",
+							"    const temp = pm.collectionVariables.get(`metricGroup${groupIdx}`);\r",
+							"    pm.collectionVariables.set(\"metricData\", temp);\r",
+							"    postman.setNextRequest(\"TestGroupN\");\r",
+							"} else {\r",
+							"    console.log(\"metric add report test finished\");    \r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// initialize groupt and report index, and metric data for post request\r",
+							"// Note. initial process should only take care zero case Do Not update any varialbe after test runing\r",
+							"\r",
+							"// group index must start from 1\r",
+							"let groupIdx = pm.collectionVariables.get(\"testGroupIdx\") || 0;\r",
+							"if (groupIdx == 0) {\r",
+							"    pm.collectionVariables.set(\"testGroupIdx\", 1);\r",
+							"    // initialize first metric data, group index 0 should only exist here once\r",
+							"    let metricData = pm.collectionVariables.get(\"metricGroup1\");\r",
+							"    pm.collectionVariables.set(\"metricData\", metricData);\r",
+							"}\r",
+							"// avoid testReportIdx not have initail value\r",
+							"let testIdx = pm.collectionVariables.get(\"testReportIdx\") || 0;\r",
+							"if (testIdx == 0)\r",
+							"    pm.collectionVariables.set(\"testReportIdx\", 0);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Id\": \"testGroup{{testGroupIdx}}_{{testReportIdx}}\",\r\n    \"Metrics\": [\r\n        {\r\n            \"MetricProperties\": [\r\n                {{metricData}}\r\n            ]\r\n        }\r\n],\r\n\"MetricReportDefinitionType\": \"OnChange\",\r\n\"ReportActions\": [\r\n    \"RedfishEvent\",\r\n    \"LogToMetricReportsCollection\"\r\n],\r\n\"ReportUpdates\": \"Overwrite\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{base_url}}/redfish/v1/TelemetryService/MetricReportDefinitions",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"redfish",
+						"v1",
+						"TelemetryService",
+						"MetricReportDefinitions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add report Periodic",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Id\": \"test_Periodic\",\r\n    \"Name\": \"Report\",\r\n    \"Metrics\": [\r\n        {\r\n            \"CollectionDuration\": \"PT30.000S\",\r\n            \"MetricProperties\": [\r\n                \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/temperature_EVB_Temp\"\r\n            ]\r\n        }\r\n    ],\r\n    \"MetricReportDefinitionType\": \"Periodic\",\r\n    \"ReportActions\": [\r\n        \"RedfishEvent\",\r\n        \"LogToMetricReportsCollection\"\r\n    ],\r\n    \"ReportUpdates\": \"AppendWrapsWhenFull\",\r\n    \"AppendLimit\": 10,\r\n    \"Schedule\": {\r\n        \"RecurrenceInterval\": \"PT5.000S\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{base_url}}/redfish/v1/TelemetryService/MetricReportDefinitions",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"redfish",
+						"v1",
+						"TelemetryService",
+						"MetricReportDefinitions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add trigger",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Id\": \"testTiger2\",\r\n    \"Name\": \"tTriger 1232\",\r\n    \"MetricProperties\": [\r\n        \"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/temperature_EVB_Temp\"\r\n    ],\r\n    \"MetricType\": \"Numeric\",\r\n    \"TriggerActions\": [\r\n        \"RedfishEvent\"\r\n    ],\r\n    \"NumericThresholds\": {\r\n        \"UpperCritical\": {\r\n            \"Reading\": 50,\r\n            \"Activation\": \"Increasing\",\r\n            \"DwellTime\": \"PT0.001S\"\r\n        },\r\n        \"UpperWarning\": {\r\n            \"Reading\": 48.1,\r\n            \"Activation\": \"Increasing\",\r\n            \"DwellTime\": \"PT0.004S\"\r\n        },\r\n        \"LowerWarning\": {\r\n            \"Reading\": 32.3,\r\n            \"Activation\": \"Decreasing\",\r\n            \"DwellTime\": \"PT0.004S\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{base_url}}/redfish/v1/TelemetryService/Triggers",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"redfish",
+						"v1",
+						"TelemetryService",
+						"Triggers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sensors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{base_url}}/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"redfish",
+						"v1",
+						"Chassis",
+						"EVB_ARBEL_NUVOTON",
+						"Sensors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reportDefineTest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{base_url}}/redfish/v1/TelemetryService/MetricReports/test",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"redfish",
+						"v1",
+						"TelemetryService",
+						"MetricReports",
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patch max report",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"MaxReports\": 200\r\n}"
+				},
+				"url": {
+					"raw": "https://{{base_url}}/redfish/v1/TelemetryService",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"redfish",
+						"v1",
+						"TelemetryService"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "del testGroup",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// group index must start from 1\r",
+							"let groupIdx = pm.collectionVariables.get(\"testGroupIdx\") || 0;\r",
+							"let testIdx = pm.collectionVariables.get(\"testReportIdx\") || 0;\r",
+							"if (groupIdx == 0)\r",
+							"    pm.collectionVariables.set(\"testGroupIdx\", 1);\r",
+							"// avoid testReportIdx not have initail value\r",
+							"if (testIdx == 0)\r",
+							"    pm.collectionVariables.set(\"testReportIdx\", 0);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"let testIdx = pm.collectionVariables.get(\"testReportIdx\") || 0;\r",
+							"let groupIdx = pm.collectionVariables.get(\"testGroupIdx\") || 0;\r",
+							"const maxReport = Number(pm.collectionVariables.get(\"metricReportN\"));\r",
+							"const maxGroup = Number(pm.collectionVariables.get(\"maxGroup\"));\r",
+							"// test report index from 0 ~ N-1\r",
+							"if (++testIdx < maxReport) {\r",
+							"    pm.collectionVariables.set(\"testReportIdx\", testIdx);\r",
+							"    postman.setNextRequest(\"del testGroup\");\r",
+							"}\r",
+							"// test group index from 1 ~ N \r",
+							"else if (++groupIdx <= maxGroup) {\r",
+							"    pm.collectionVariables.set(\"testReportIdx\", 0);\r",
+							"    pm.collectionVariables.set(\"testGroupIdx\", groupIdx);\r",
+							"    postman.setNextRequest(\"del testGroup\");\r",
+							"} else {\r",
+							"    console.log(\"delete test finished\");\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://{{base_url}}/redfish/v1/TelemetryService/MetricReportDefinitions/testGroup{{testGroupIdx}}_{{testReportIdx}}",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"redfish",
+						"v1",
+						"TelemetryService",
+						"MetricReportDefinitions",
+						"testGroup{{testGroupIdx}}_{{testReportIdx}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "0penBmc",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "root",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Do NOT initialize collection data here. This script runs every request",
+					"",
+					"// initialize metric data at collection?",
+					"//let tGroup = Number(pm.collectionVariables.get(\"testGroup\")) ;",
+					"//let temp = pm.collectionVariables.get(`metricGroup${tGroup}`);",
+					"//pm.collectionVariables.set(\"metricData\", temp);",
+					"//console.log(\"collection pre-request script.\");"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "testName",
+			"value": "0",
+			"type": "string"
+		},
+		{
+			"key": "testGroup",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "metricGroup2",
+			"value": "\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/temperature_EVB_Temp\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_4\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_5\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_6\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan4\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan5\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan6\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC4\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC5\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC6\"",
+			"type": "string"
+		},
+		{
+			"key": "metricGroup1",
+			"value": "\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/temperature_EVB_Temp\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_1\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_2\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_3\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan1\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan2\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan3\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC1\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC2\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC3\"",
+			"type": "string"
+		},
+		{
+			"key": "metricGroup3",
+			"value": "\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/temperature_EVB_Temp\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_1\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_7\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_8\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan1\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan7\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan8\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC1\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC7\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC8\"",
+			"type": "string"
+		},
+		{
+			"key": "metricGroup4",
+			"value": "\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_2\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_4\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_6\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan2\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan4\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan6\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC2\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC4\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC6\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC8\"",
+			"type": "string"
+		},
+		{
+			"key": "metricGroup5",
+			"value": "\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_3\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_5\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_7\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan3\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan5\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan7\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC3\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC5\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC7\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC1\"",
+			"type": "string"
+		},
+		{
+			"key": "temp",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "metricReportN",
+			"value": "40",
+			"type": "string"
+		},
+		{
+			"key": "metricData",
+			"value": "\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/temperature_EVB_Temp\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_1\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_2\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fanpwm_Pwm_3\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan1\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan2\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/fantach_Fan3\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC1\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC2\",\n\"/redfish/v1/Chassis/EVB_ARBEL_NUVOTON/Sensors/voltage_ADC3\"",
+			"type": "string"
+		},
+		{
+			"key": "testLoop",
+			"value": "10",
+			"type": "string"
+		},
+		{
+			"key": "idx",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "testReportIdx",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "testGroupIdx",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "maxGroup",
+			"value": "5",
+			"type": "string"
+		}
+	]
+}

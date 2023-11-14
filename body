@@ -1,0 +1,16 @@
+{
+    "Id": "testGroup{{testGroupIdx}}_{{testReportIdx}}",
+    "Metrics": [
+        {
+            "MetricProperties": [
+                {{metricData}}
+            ]
+        }
+],
+"MetricReportDefinitionType": "OnChange",
+"ReportActions": [
+    "RedfishEvent",
+    "LogToMetricReportsCollection"
+],
+"ReportUpdates": "Overwrite"
+}
