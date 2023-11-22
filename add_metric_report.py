@@ -30,7 +30,8 @@ metricReportN = int(vars["metricReportN"])
 metricGrouptN = int(vars["maxGroup"])
 metricData = vars["metricGroup1"]
 # myhttp.verbose()
-for i in range(1, metricGrouptN):
+# group: 1 ~ N, report: 0 ~ N-1
+for i in range(1, metricGrouptN + 1):
     metricData = vars[metricGroups.format(i)]
     for k in range(metricReportN):
         body_data = (

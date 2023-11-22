@@ -41,7 +41,7 @@ def load(file=VAR_FILE):
         data = json.load(f)
     if ROOT_NODE in data:
         return toDict(data[ROOT_NODE])
-    return []
+    return {}
 
 
 

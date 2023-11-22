@@ -17,6 +17,6 @@ reportName = "testGroup{}_{}"
 url = "https://{}/redfish/v1/TelemetryService/MetricReportDefinitions/".format(base_url)
 
 myhttp.verbose()
-for i in range(1, metricGrouptN):
+for i in range(1, metricGrouptN + 1):
     for k in range(metricReportN):
         myhttp.delete(url + reportName.format(i, k))
